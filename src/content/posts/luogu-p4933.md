@@ -1,6 +1,7 @@
 ---
 title: "【题解】洛谷 P4933 —— 等差子序列计数（DP + 哈希表）"
-published: "2026-01-23T21:00:00+08:00"
+published: "2026-01-23"
+originalPublished: "2026-01-23T21:00:00+08:00"
 category: 算法题解
 tags: ["算法", "ACM"]
 description: "按最后一项和公差分类，用 DP 与哈希表统计等差子序列。"

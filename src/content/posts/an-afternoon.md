@@ -1,6 +1,7 @@
 ---
 title: "一个下午"
-published: "2026-01-22T19:31:16+08:00"
+published: "2026-01-22"
+originalPublished: "2026-01-22T19:31:16+08:00"
 category: 随笔
 tags: ["随笔"]
 description: "学期结束了。舍友下午六点离开，我去送他。"

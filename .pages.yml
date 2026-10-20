@@ -33,8 +33,11 @@ content:
         type: date
         required: true
         options:
-          time: true
-          format: yyyy-MM-dd'T'HH:mm:ssXXX
+          format: yyyy-MM-dd
+      - name: originalPublished
+        type: string
+        hidden: true
+        readonly: true
       - name: draft
         label: 存为草稿（开启后不公开）
         type: boolean
