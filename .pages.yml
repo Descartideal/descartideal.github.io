@@ -71,7 +71,7 @@ content:
     path: src/data/tags
     format: json
     filename:
-      template: "{id}.json"
+      template: "{year}-{month}-{day}-{hour}{minute}{second}.json"
       field: false
     operations:
       create: true
@@ -96,7 +96,7 @@ content:
     path: src/data/categories
     format: json
     filename:
-      template: "{id}.json"
+      template: "{year}-{month}-{day}-{hour}{minute}{second}.json"
       field: false
     operations:
       create: true
