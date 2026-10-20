@@ -4,16 +4,28 @@ import {getSortedPosts} from '../utils/content-utils';
 const posts=await getSortedPosts();
 const categories=[...new Set(posts.map(p=>p.data.category))];
 const years=[...new Set(posts.map(p=>p.data.published.getUTCFullYear()))];
+const tags=[...new Set(posts.flatMap(p=>p.data.tags))];
 ---
 <QuietLayout title="归档">
   <header class="page-heading"><div class="eyebrow">THE ARCHIVE</div><h1>时间里的文字</h1><p>共 {posts.length} 篇，慢慢记录。</p></header>
-  <div class="filter-bar" role="group" aria-label="文章分类"><button data-filter="all" aria-pressed="true">全部</button>{categories.map(c=><button data-filter={c} aria-pressed="false">{c}</button>)}</div>
-  {years.map(year=><section class="archive-year"><h2 class="year">{year}</h2>{posts.filter(p=>p.data.published.getUTCFullYear()===year).map(p=><a href={`/posts/${p.slug}/`} class="post-row" data-category={p.data.category}><time class="post-date" datetime={p.data.published.toISOString()}>{new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(p.data.published).slice(5).replace('-',' / ')}</time><div><h2>{p.data.title}</h2><span class="tags">{p.data.category}</span></div><span class="arrow" aria-hidden="true">↗</span></a>)}</section>)}
+  <div class="filter-bar" role="group" aria-label="文章分类"><button data-filter="all" aria-pressed="true">全部分类</button>{categories.map(c=><button data-filter={c} aria-pressed="false">{c}</button>)}</div>
+  <div class="filter-bar" role="group" aria-label="文章标签"><button data-tag="all" aria-pressed="true">全部标签</button>{tags.map(t=><button data-tag={t} aria-pressed="false">#{t}</button>)}</div>
+  {years.map(year=><section class="archive-year"><h2 class="year">{year}</h2>{posts.filter(p=>p.data.published.getUTCFullYear()===year).map(p=><a href={`/posts/${p.slug}/`} class="post-row" data-category={p.data.category} data-tags={JSON.stringify(p.data.tags)}><time class="post-date" datetime={p.data.published.toISOString()}>{new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(p.data.published).slice(5).replace('-',' / ')}</time><div><h2>{p.data.title}</h2><span class="tags">{p.data.category}{p.data.tags.map(t=><span>#{t}</span>)}</span></div><span class="arrow" aria-hidden="true">↗</span></a>)}</section>)}
   <script>
-    document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
-      document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
-      document.querySelectorAll<HTMLElement>('[data-category]').forEach(row=>row.hidden=button.dataset.filter!=='all'&&row.dataset.category!==button.dataset.filter);
+    let category='all', tag='all';
+    function applyFilters(){
+      document.querySelectorAll<HTMLElement>('[data-category]').forEach(row=>row.hidden=(category!=='all'&&row.dataset.category!==category)||(tag!=='all'&&!JSON.parse(row.dataset.tags || '[]').includes(tag)));
       document.querySelectorAll<HTMLElement>('.archive-year').forEach(section=>section.hidden=!section.querySelector('[data-category]:not([hidden])'));
+    }
+    document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+      category=button.dataset.filter || 'all';
+      document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      applyFilters();
+    }));
+    document.querySelectorAll<HTMLButtonElement>('[data-tag]').forEach(button=>button.addEventListener('click',()=>{
+      tag=button.dataset.tag || 'all';
+      document.querySelectorAll('[data-tag]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      applyFilters();
     }));
   </script>
 </QuietLayout>
