@@ -15,5 +15,5 @@ const {Content, headings}=await entry.render();
     {headings.length>0 && <details class="toc" open><summary>文章目录</summary><ol>{headings.filter(h=>h.depth<=3).map(h=><li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></details>}
     <article class="prose" data-pagefind-body><Content /></article>
   </div>
-  <div class="article-end"><a href="/archive/">← 文章归档</a><a href="/rss.xml">订阅后续文章 ↗</a></div>
+  <div class="article-end"><a href="/archive/">← 文章归档</a></div>
 </QuietLayout>
