@@ -1,0 +1,116 @@
+media:
+  - name: images
+    label: 图片库
+    input: public/images
+    output: /images
+    categories: [image]
+    rename: random
+content:
+  - name: posts
+    label: 文章管理
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, published, draft, category, tags]
+      sort: [published, title]
+      search: [title, description, body]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+      - name: published
+        label: 发布日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: draft
+        label: 存为草稿（开启后不公开）
+        type: boolean
+        default: true
+      - name: description
+        label: 摘要
+        type: text
+      - name: category
+        label: 分类
+        type: reference
+        options:
+          collection: categories
+          value: "{fields.id}"
+          label: "{fields.name}"
+          search: name,id
+      - name: tags
+        label: 标签
+        type: reference
+        options:
+          collection: tags
+          multiple: true
+          value: "{fields.id}"
+          label: "{fields.name}"
+          search: name,id
+      - name: body
+        label: 正文（公式建议使用 Source 模式编辑）
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
+          media: images
+  - name: tags
+    label: 标签管理
+    type: collection
+    path: src/data/tags
+    format: json
+    filename:
+      template: "{id}.json"
+      field: false
+    operations:
+      create: true
+      rename: false
+      delete: true
+    view:
+      primary: name
+      fields: [name, id]
+      sort: [name]
+    fields:
+      - name: id
+        label: 固定标识（新建时填写，之后保持不变）
+        type: string
+        required: true
+      - name: name
+        label: 显示名称（修改后全站同步）
+        type: string
+        required: true
+  - name: categories
+    label: 分类管理
+    type: collection
+    path: src/data/categories
+    format: json
+    filename:
+      template: "{id}.json"
+      field: false
+    operations:
+      create: true
+      rename: false
+      delete: true
+    view:
+      primary: name
+      fields: [name, id]
+    fields:
+      - name: id
+        label: 固定标识（新建时填写，之后保持不变）
+        type: string
+        required: true
+      - name: name
+        label: 显示名称（修改后全站同步）
+        type: string
+        required: true

@@ -1,0 +1,19 @@
+---
+import QuietLayout from '../layouts/QuietLayout.astro';
+import {getSortedPosts} from '../utils/content-utils';
+const posts=await getSortedPosts();
+const categories=[...new Set(posts.map(p=>p.data.category))];
+const years=[...new Set(posts.map(p=>p.data.published.getUTCFullYear()))];
+---
+<QuietLayout title="归档">
+  <header class="page-heading"><div class="eyebrow">THE ARCHIVE</div><h1>时间里的文字</h1><p>共 {posts.length} 篇，慢慢记录。</p></header>
+  <div class="filter-bar" role="group" aria-label="文章分类"><button data-filter="all" aria-pressed="true">全部</button>{categories.map(c=><button data-filter={c} aria-pressed="false">{c}</button>)}</div>
+  {years.map(year=><section class="archive-year"><h2 class="year">{year}</h2>{posts.filter(p=>p.data.published.getUTCFullYear()===year).map(p=><a href={`/posts/${p.slug}/`} class="post-row" data-category={p.data.category}><time class="post-date" datetime={p.data.published.toISOString()}>{new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(p.data.published).slice(5).replace('-',' / ')}</time><div><h2>{p.data.title}</h2><span class="tags">{p.data.category}</span></div><span class="arrow" aria-hidden="true">↗</span></a>)}</section>)}
+  <script>
+    document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+      document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      document.querySelectorAll<HTMLElement>('[data-category]').forEach(row=>row.hidden=button.dataset.filter!=='all'&&row.dataset.category!==button.dataset.filter);
+      document.querySelectorAll<HTMLElement>('.archive-year').forEach(section=>section.hidden=!section.querySelector('[data-category]:not([hidden])'));
+    }));
+  </script>
+</QuietLayout>

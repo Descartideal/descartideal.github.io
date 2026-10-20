@@ -1,0 +1,60 @@
+---
+import '../styles/quiet.css';
+import 'katex/dist/katex.min.css';
+import '@fontsource-variable/jetbrains-mono';
+interface Props { title?: string; description?: string; article?: boolean }
+const { title, description = '自由是遗忘的左伴随。笛卡尔似的梦的个人博客，记录算法与日常。', article = false } = Astro.props;
+const name = '笛卡尔似的梦的博客';
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8f7f4" />
+    <title>{title ? `${title} · ${name}` : name}</title>
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title={name} href="/rss.xml" />
+    <meta property="og:title" content={title || name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <script is:inline>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'light'}catch{}</script>
+  </head>
+  <body>
+    <a class="skip" href="#main">跳转到内容</a>
+    <header class="site-header shell">
+      <a class="wordmark" href="/" aria-label="笛卡尔似的梦的博客首页"><span class="mark">d.</span><span>笛卡尔似的梦<span class="wordmark-sub">PERSONAL JOURNAL</span></span></a>
+      <nav aria-label="主导航">
+        <a href="/" aria-current={path === '/' ? 'page' : undefined}>文章</a>
+        <a href="/archive/" aria-current={path === '/archive/' ? 'page' : undefined}>归档</a>
+        <a href="/about/" aria-current={path === '/about/' ? 'page' : undefined}>关于</a>
+        <a href="/search/" aria-label="搜索文章" class="icon-button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></a>
+        <button id="theme-toggle" class="icon-button" aria-label="切换深色模式" title="切换深色模式"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></button>
+      </nav>
+    </header>
+    <main id="main" class="shell"><slot /></main>
+    <footer class="site-footer shell"><span>© {new Date().getFullYear()} 笛卡尔似的梦</span></footer>
+    <div class="music shell"><button id="music-toggle" aria-label="播放：不要死在那个夏天" aria-pressed="false"><span id="music-icon">▷</span><span>不要死在那个夏天</span><span class="music-hint" id="music-state">点击播放</span></button><audio id="music" src="/audio/summer.mp3" preload="none" loop></audio></div>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('#theme-toggle');
+      button?.addEventListener('click', () => {
+        const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = theme;
+        try { localStorage.setItem('theme', theme); } catch {}
+        button.setAttribute('aria-label', theme === 'dark' ? '切换浅色模式' : '切换深色模式');
+      });
+      const audio=document.querySelector<HTMLAudioElement>('#music')!;
+      const music=document.querySelector<HTMLButtonElement>('#music-toggle')!;
+      const state=document.querySelector('#music-state')!;
+      const icon=document.querySelector('#music-icon')!;
+      audio.volume=.3;
+      music.addEventListener('click',async()=>{if(audio.paused){try{await audio.play()}catch{state.textContent='暂时无法播放'}}else audio.pause()});
+      audio.addEventListener('play',()=>{music.setAttribute('aria-pressed','true');music.setAttribute('aria-label','暂停：不要死在那个夏天');state.textContent='正在播放';icon.textContent='Ⅱ'});
+      audio.addEventListener('pause',()=>{music.setAttribute('aria-pressed','false');music.setAttribute('aria-label','播放：不要死在那个夏天');state.textContent='点击播放';icon.textContent='▷'});
+      audio.addEventListener('error',()=>state.textContent='暂时无法播放');
+    </script>
+  </body>
+</html>

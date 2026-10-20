@@ -1,0 +1,17 @@
+[
+  {
+    "original": "追寻.md",
+    "new": "seeking",
+    "body_sha256": "eb3a0f3b38125b999518af0dd5d3cb189d14fb1114bd2d8070029182285a7f6a"
+  },
+  {
+    "original": "一个下午.md",
+    "new": "an-afternoon",
+    "body_sha256": "bff7c20883a7df650f419cf61afd29437c23b049f96b9433216718a9a43fd7e1"
+  },
+  {
+    "original": "【题解】洛谷 P4933 —— 等差子序列计数（DP + 哈希表）.md",
+    "new": "luogu-p4933",
+    "body_sha256": "f8a4d3f9df563c455ad037fdc395541b0e5db077a0620708263ecb64e70fa22d"
+  }
+]

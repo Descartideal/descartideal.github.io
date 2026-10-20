@@ -1,0 +1,14 @@
+---
+import QuietLayout from '../layouts/QuietLayout.astro';
+---
+<QuietLayout title="搜索">
+  <header class="page-heading"><div class="eyebrow">FIND A THOUGHT</div><h1>搜索文字</h1></header>
+  <input id="query" class="search-input" type="search" placeholder="试试「等差」或「下午」" autocomplete="off" aria-label="搜索关键词" />
+  <p class="search-status" id="status" role="status">输入关键词，搜索文章全文。</p><div id="results"></div>
+  <script is:inline type="module">
+    const input=document.querySelector('#query'),status=document.querySelector('#status'),results=document.querySelector('#results');
+    let index,serial=0,timer;
+    async function search(){const request=++serial,q=input.value.trim();results.replaceChildren();if(!q){status.textContent='输入关键词，搜索文章全文。';return}status.textContent='正在寻找…';try{index??=await import('/pagefind/pagefind.js');const found=await index.search(q);const data=await Promise.all(found.results.map(r=>r.data()));if(request!==serial)return;status.textContent=data.length?`找到 ${data.length} 篇文章`:'没有找到相关文字，换个关键词试试。';for(const item of data){const a=document.createElement('a');a.className='post-row';a.href=item.url;const label=document.createElement('span');label.className='post-date';label.textContent='搜索结果';const box=document.createElement('div'),h=document.createElement('h2'),p=document.createElement('p');h.textContent=item.meta.title;p.textContent=item.excerpt.replace(/<[^>]*>/g,'');box.append(h,p);const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='↗';a.append(label,box,arrow);results.append(a)}}catch{if(request===serial)status.textContent='搜索暂时不可用，请稍后重试。'}}
+    input.addEventListener('input',()=>{++serial;clearTimeout(timer);timer=setTimeout(search,180)});
+  </script>
+</QuietLayout>
